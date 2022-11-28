@@ -4,17 +4,32 @@ import { useHistory } from 'react-router-dom'
 import { createActivity, getCountries } from '../../actions'
 import './CreateActivity.css'
 
+function validate(input){
+        const errors = {}
+    if(input.name === ''){
+        errors.name = 'name must be completed'
+    }
+    else if(input.difficulty === '') {
+        errors.difficulty = 'difficulty must be completed'
+    }
+    else if(input.season === '') {
+        errors.season = 'season must be completed'
+    }
+    else if(input.duration === '') {
+        errors.duration = 'duration must be completed'
+    }
+    else if(input.countries.length === 0){
+        errors.countries = 'select at least one country'
+    }
+    return errors
+}
 
 
 export default function CreateActivity() {
+    const [error, setError] = useState({})
     const history = useHistory()
     const country = useSelector((state)=> state.countries)
-    const dispatch = useDispatch()
-    useEffect(()=>{
-        dispatch(getCountries())
-    }, [dispatch])
-
-    
+    const dispatch = useDispatch() 
     const [input, setInput] = useState({
         name : '',
         season : '',
@@ -23,19 +38,19 @@ export default function CreateActivity() {
         countries : []
     })
 
-    const handleSeason = (e) => {
-        setInput({
-            ...input, season : e.target.value
-        })
-    }
+    useEffect(()=>{
+        dispatch(getCountries())
+    }, [dispatch])
 
     const handleChange = (e) => {
         setInput({
             ...input, [e.target.name] : e.target.value
+            
         })
-        
+        setError(validate(input))
         
     }
+    
     
 
 
@@ -49,36 +64,35 @@ export default function CreateActivity() {
         return 0
     })
 
-    const handleDifficulty = (e) => {
-        setInput({
-            ...input, difficulty : e.target.value
-        })
-    }
-
-    const handleDuration = (e) => {
-        setInput({
-            ...input, duration : e.target.value
-        })
-    }
 
     const handleCountries = (e) =>{
         setInput({
             ...input,
-            countries : [...input.countries, e.target.value]
+            countries : [...input.countries, input.countries.includes(e.target.value) ? null : e.target.value]
         })
     }
 
     const handleSubmit = (e)=>{
         e.preventDefault();
-        dispatch(createActivity(input))
-        setInput({
+        
+        if(Object.keys(error).length > 0){
+           alert(Object.values(error))
+        }
+        else if(input.difficulty < 1 || input.difficulty > 5) {
+            alert('Difficulty must be between 1 and 5')
+        }
+        else {
+            dispatch(createActivity(input))
+          setInput({
             name : '',
             season : '',
             difficulty : '',
             duration : '',
             countries : []
         })
-        history.push('/home')
+        history.push('/home') 
+        }
+        
     }
 
     const handleCancel = (e)=>{
@@ -100,57 +114,36 @@ export default function CreateActivity() {
     
     
     const countryList = countries.map((country)=>country.name)
-    const season = ['Winter', 'Spring', 'Autumn', 'Summer']
-    const difficulty = [1, 2, 3, 4 , 5]
-    const duration = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24]
+    // const season = ['Winter', 'Spring', 'Autumn', 'Summer']
+    // const difficulty = [1, 2, 3, 4 , 5]
+
+
+
   return (
     <div className='box'>
-
+        <h1>Create your activity</h1>
         <div className='container1'>
-            <button onClick={handleClick}>Back</button>
+            
         <form className='form' onSubmit={handleSubmit}>
             <div>
                 <label>Activity: </label>
-                <input type="text" value={input.name} name='name' onChange={handleChange}/> 
+                <input placeholder='activity name' className='inputs' type="text" value={input.name} name='name' onChange={handleChange}/> 
             </div>
-            {input.name === '' ? <p>This field must be completed</p> : null}
             <div>
                 <label>Season: </label>
-                <select onChange={handleSeason}>
-                    <option value="" hidden>Select season</option>
-                    {season.map((s)=>(
-                        <option value={s} name='season' key={s}>{s}</option>
-                    )
-                    )}
-                </select>
-                {input.season === '' ? <p>This field must be completed</p> : null}
+                <input placeholder='activity season' className='inputs' type="text" value={input.season} name='season' onChange={handleChange} />
             </div>
             <div>
                 <label>Difficulty: </label>
-                <select onChange={handleDifficulty}>
-                    <option value="" hidden>Select difficulty</option>
-                    {
-                        difficulty.map((d)=>(
-                            <option value={d} name='difficulty' key={d}>{d}</option>
-                        ))
-                    }
-                </select>
-                {input.name === '' ? <p>This field must be completed</p> : null}
+                <input placeholder='between 1 to 5' className='inputs' type="text" value={input.difficulty} name='difficulty' onChange={handleChange}/>
             </div>
             <div>
                 <label>Duration: </label>
-                <select onChange={handleDuration}>
-                    <option value="" hidden>Select duration</option>
-                    {
-                    duration.map((d)=>(
-                        <option value={d} name='duration' key={d}>{d}</option>
-                    ))}
-                </select> 
+                <input placeholder='activity duration (weeks)' className='inputs' type="text" value={input.duration} name='duration' onChange={handleChange} />
             </div>
-            {input.name === '' ? <p>This field must be completed</p> : null}
             <div>
                 <label>Countries: </label>
-                <select onChange={handleCountries}>
+                <select className='inputs' onChange={handleCountries}>
                     <option value="" hidden>Select countries</option>
                     {
                         countryList.map((c)=>(
@@ -158,12 +151,14 @@ export default function CreateActivity() {
                         ))
                     }
                 </select>
-                {input.countries.length === 0 ? <p>This field must be completed</p> : null}
-                <p>{input.countries}</p>
+                <p>{input.countries.join(', ')}</p>
+            </div>
+            <div className='buttons'>
+                <button className='button' onClick={handleSubmit}>Create activity</button>
+                <button className='button' onClick={handleCancel}>Cancel</button>
+                <button className='button' onClick={handleClick}>Back</button>
             </div>
             
-            <button className='button' onClick={handleSubmit}>Create activity</button>
-            <button onClick={handleCancel}>Cancel</button>
         </form>
         </div>       
     </div>

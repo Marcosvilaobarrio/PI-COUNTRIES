@@ -18,10 +18,15 @@ router.get('/', async (req, res) => {
         },
         include: Activity
         });
-        res.status(200).send(country)
-    } else {
+        if(country.length > 0){
+          res.status(200).send(country)  
+        } else {
+            res.status(404).send({msg : 'Try with another name'})
+        }
+        
+    } 
+    else {
         const countries = await Country.findAll({
-        limit : 120,
         include : Activity
     })
         res.status(200).send(countries)
@@ -31,6 +36,8 @@ router.get('/', async (req, res) => {
     }
     
 })
+
+
 
 router.get('/:id', async (req, res) => {
     try {

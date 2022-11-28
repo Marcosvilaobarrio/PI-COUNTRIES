@@ -33,6 +33,7 @@ export default function Detail() {
     const subregion = country.map((e)=>e.subregion)
     const capital = country.map((e)=>e.capital)
     const flag = country.map((e)=>e.flag)
+    const languages = country.map((e)=>e.languages)
 
     const activities = country.length > 0 ? country[0].activities?.map(e=>{
       return {
@@ -78,6 +79,10 @@ export default function Detail() {
             <div className='text'>
               <div className='detail'><strong>Pupulation</strong>:{' '} </div>
               <div className='data'>{population.toLocaleString()} persons </div>
+            </div>
+            <div className='text'>
+              <div className='detail'><strong>Languages</strong>:{' '} </div>
+              <div className='data'>{languages} </div>
             </div>
           </div>
           

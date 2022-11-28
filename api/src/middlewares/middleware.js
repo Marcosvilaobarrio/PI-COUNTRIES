@@ -14,7 +14,8 @@ const getApiInfo = async () => {
             continent: country.continents[0],
             subregion: country.subregion != null ? country.subregion : 'No data',
             area: country.area,
-            population: country.population
+            population: country.population,
+            languages: !country.languages ? ['No data'] : Object.values(country.languages)
         }
     })
     countryInfo.forEach((el)=> {
@@ -28,7 +29,8 @@ const getApiInfo = async () => {
                capital: el.capital,
                subregion: el.subregion,
                area: el.area,
-               population: el.population
+               population: el.population,
+               languages: el.languages
            }
        })
     })               
@@ -47,7 +49,8 @@ const getAllCountryDetail = async () => {
             continent: country.continents[0],
             subregion: country.subregion != null ? country.subregion : 'No data',
             area: country.area,
-            population: country.population
+            population: country.population,
+            // languages: !country.languages ? 'No data' : Object.values(country.languages)
         }
     })
     return countryInfo

@@ -1,10 +1,10 @@
 import React, {useEffect} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import {getAllActivities, getFilterActivity,getFilterContinent } from '../../actions'
+import {getAllActivities, getFilterActivity } from '../../actions'
 import style from './Filters.module.css'
 
 
-export default function Filters({handleFilterAlphabetic, handleFilterPopulation}) {
+export default function Filters({handleFilterAlphabetic, handleFilterPopulation, handleFilterContinent}) {
     const dispatch = useDispatch()
     const activity = useSelector((state) => state.activities)
 
@@ -14,24 +14,12 @@ export default function Filters({handleFilterAlphabetic, handleFilterPopulation}
         dispatch(getAllActivities())
     }, [dispatch])
     
-
-    // const handleFilterPopulation = (e) => {
-    //     dispatch(getFilterPopulation(e.target.value))
-    // }
-
-    const handleFilterContinent = (e) => {
-        dispatch(getFilterContinent(e.target.value))
-    }
-
     const handleFilterActivity = (e) =>{
         e.preventDefault()
         dispatch(getFilterActivity(e.target.value))
     }
 
-    // const handleFilterAlphabetic = (e)=>{
-    //     e.preventDefault()
-    //     dispatch(getFilterAlphabet(e.target.value))
-    // }
+
 
   return (
     <div className={style.filters}>

@@ -27,7 +27,7 @@ router.post('/', async (req, res, next) => {
     } = req.body;
 
     if(!name || !difficulty || !season || !duration || !countries){
-        throw Error({msg : 'This field ust be complete'})
+        throw new Error({msg : 'This field ust be complete'})
     }
 
     const activity = await Activity.create({

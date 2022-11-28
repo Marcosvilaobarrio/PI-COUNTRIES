@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import Card from '../Card/Card.jsx'
 import {useDispatch, useSelector} from 'react-redux'
 import { useEffect } from 'react'
-import { getCountries, getFilterAlphabet, getFilterPopulation } from '../../actions'
+import { getCountries, getFilterAlphabet, getFilterContinent, getFilterPopulation } from '../../actions'
 import './Home.css'
 import Navbar from '../Navbar/Navbar.jsx'
 import Paginado from '../Paginado.jsx/Paginado.jsx'
@@ -20,6 +20,15 @@ export default function Home() {
     const indexOfLastCountry = currentPage === 1 ? 9 : currentPage * countriesPerPage
     const indexOfFirstCountry = currentPage === 1 ? 0 : indexOfLastCountry - countriesPerPage
     const currentCountries = allCountries.slice(indexOfFirstCountry, indexOfLastCountry)
+
+    useEffect( ()=>{
+        setIsLoading(true);        
+             dispatch(getCountries())       
+        setTimeout(() => {
+           setIsLoading(false) 
+        }, 2200);
+        
+    }, [dispatch])
     
     const handleNextClick = (e) => {
         e.preventDefault();
@@ -51,14 +60,7 @@ export default function Home() {
         setCurrentPage(pageNumber)
     }
 
-    useEffect( ()=>{
-        setIsLoading(true);        
-             dispatch(getCountries())       
-        setTimeout(() => {
-           setIsLoading(false) 
-        }, 2200);
-        
-    }, [dispatch])
+
 
     if(isLoading){
         return <Loader/>
@@ -76,6 +78,11 @@ export default function Home() {
         setCurrentPage(1)
         setOrder(`${e.target.value}`)
     }  
+    const handleFilterContinent = (e) => {
+        dispatch(getFilterContinent(e.target.value))
+        setCurrentPage(1)
+        setOrder(`${e.target.value}`)
+    }
     
     
  
@@ -84,10 +91,10 @@ export default function Home() {
     <div>
             <Navbar/>
         <div className='seanav'>
-            <Filters handleFilterAlphabetic={handleFilterAlphabetic} handleFilterPopulation={handleFilterPopulation}/>
+            <Filters handleFilterAlphabetic={handleFilterAlphabetic} handleFilterPopulation={handleFilterPopulation} handleFilterContinent={handleFilterContinent}/>
             <SearchBar/>  
         </div>
-       
+       {
         <ul className='countriesGrid'>
             {
                 currentCountries?.map((country)=>{
@@ -96,7 +103,7 @@ export default function Home() {
                     );
                 })
             }
-        </ul>
+        </ul>}
         <Paginado
             currentPage = {currentPage}
             handlePrevClick = {handlePrevClick}
