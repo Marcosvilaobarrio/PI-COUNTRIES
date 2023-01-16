@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { getCountries, getNameCountry } from '../../actions'
+import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import {getNameCountry } from '../../actions'
 import styles from './SearchBar.module.css'
 
 
@@ -30,7 +30,7 @@ export default function SearchBar() {
 
   return (
     <form className={styles.container}>
-        <input onChange={handleChange} value={name} onSubmit={handleSubmit} className={styles.searchBar} type="text" placeholder='SEARCH...'/>
+        <input onChange={handleChange} value={name} onSubmit={handleSubmit} className={styles.searchBar} type="text" placeholder='search...'/>
         <button  onClick={handleSubmit} className={styles.btn}></button>
     </form>
   )
